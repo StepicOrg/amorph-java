@@ -137,8 +137,8 @@ public class ZsMatcher extends Matcher {
                         ITree tDst = dst.tree(col);
                         if (Objects.equals(tSrc.getType(), tDst.getType()))
                             addMapping(tSrc, tDst);
-                        else
-                            throw new RuntimeException("Should not map incompatible nodes.");
+//                        else
+//                            throw new RuntimeException("Should not map incompatible nodes.");
                         row--;
                         col--;
                     } else {
