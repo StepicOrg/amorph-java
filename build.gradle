@@ -18,3 +18,12 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7.25'
     compile 'org.slf4j:slf4j-api:1.7.25'
 }
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'org.stepik.amorph.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
