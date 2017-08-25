@@ -138,7 +138,7 @@ public class Server {
             g.generate();
 
             List<Action> actions = g.getActions();
-            List<Patch> patches = PatchUtil.patchesFromActions(actions, srcTree, dstTree);
+            List<Patch> patches = PatchUtil.patchesFromActions(actions);
 
             response.header("Access-Control-Allow-Origin", "*");
             response.type("application/json");
