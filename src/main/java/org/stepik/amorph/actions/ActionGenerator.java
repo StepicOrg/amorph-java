@@ -107,7 +107,7 @@ public class ActionGenerator {
                 // In order to use the real nodes from the second tree, we
                 // furnish x instead of w and fake that x has the newly
                 // generated ID.
-                Action ins = new Insert(x, origSrcTrees.get(z.getId()), k);
+                Action ins = new InsertAction(x, origSrcTrees.get(z.getId()), k);
                 actions.add(ins);
                 //System.out.println(ins);
                 origSrcTrees.put(w.getId(), x);
@@ -118,13 +118,13 @@ public class ActionGenerator {
                 w = newMappings.getSrc(x);
                 if (!x.equals(origDst)) { // TODO => x != origDst // Case of the root
                     ITree v = w.getParent();
-                    if (!w.getProps().equals(x.getProps())) {
-                        actions.add(new Update(origSrcTrees.get(w.getId()), x.getProps()));
-                        w.setProps(x.getProps());
+                    if (!w.getValue().equals(x.getValue())) {
+                        actions.add(new UpdateAction(origSrcTrees.get(w.getId()), x.getValue()));
+                        w.setValue(x.getValue());
                     }
                     if (!z.equals(v)) {
                         int k = findPos(x);
-                        Action mv = new Move(origSrcTrees.get(w.getId()), origSrcTrees.get(z.getId()), k);
+                        Action mv = new MoveAction(origSrcTrees.get(w.getId()), origSrcTrees.get(z.getId()), k);
                         actions.add(mv);
                         //System.out.println(mv);
                         int oldk = w.positionInParent();
@@ -143,7 +143,7 @@ public class ActionGenerator {
 
         for (ITree w : newSrc.postOrder()) {
             if (!newMappings.hasSrc(w)) {
-                actions.add(new Delete(origSrcTrees.get(w.getId())));
+                actions.add(new DeleteAction(origSrcTrees.get(w.getId())));
                 //w.getParent().getChildren().remove(w);
             }
         }
@@ -180,7 +180,7 @@ public class ActionGenerator {
                 if (origMappings.has(a, b)) {
                     if (!lcs.contains(new Mapping(a, b))) {
                         int k = findPos(b);
-                        Action mv = new Move(origSrcTrees.get(a.getId()), origSrcTrees.get(w.getId()), k);
+                        Action mv = new MoveAction(origSrcTrees.get(a.getId()), origSrcTrees.get(w.getId()), k);
                         actions.add(mv);
                         //System.out.println(mv);
                         int oldk = a.positionInParent();

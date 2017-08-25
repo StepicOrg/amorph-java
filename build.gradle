@@ -17,6 +17,7 @@ dependencies {
     compile 'com.sparkjava:spark-core:2.6.0'
     compile 'org.slf4j:slf4j-simple:1.7.25'
     compile 'org.slf4j:slf4j-api:1.7.25'
+    compile 'org.antlr:antlr4-runtime:4.7'
 }
 
 task fatJar(type: Jar) {

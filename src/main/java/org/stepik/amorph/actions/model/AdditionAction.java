@@ -22,13 +22,13 @@ package org.stepik.amorph.actions.model;
 
 import org.stepik.amorph.tree.ITree;
 
-public abstract class Addition extends Action {
+public abstract class AdditionAction extends Action {
 
     protected ITree parent;
 
     protected int pos;
 
-    public Addition(ITree node, ITree parent, int pos) {
+    public AdditionAction(ITree node, ITree parent, int pos) {
         super(node);
         this.parent = parent;
         this.pos = pos;

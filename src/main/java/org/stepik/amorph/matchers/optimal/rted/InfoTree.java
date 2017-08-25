@@ -58,7 +58,7 @@ public class InfoTree {
 
     public int[][] info; // an array with all the indeces
     
-    private PropsDictionary pd; // dictionary with labels - common for two input trees
+    private LabelDictionary pd; // dictionary with labels - common for two input trees
 
     public boolean[][] nodeType; // store the type of a node: for every node stores three boolean values (L, R, H)
     
@@ -91,7 +91,7 @@ public class InfoTree {
      * @param aInputTree an LblTree object
      * @param aLd  a PropsDictionary object
      */
-    public InfoTree(ITree aInputTree, PropsDictionary aLd) {
+    public InfoTree(ITree aInputTree, LabelDictionary aLd) {
         this.inputTree = aInputTree;
         treeSize = inputTree.getSize();
         this.info = new int[16][treeSize];
@@ -280,7 +280,7 @@ public class InfoTree {
 
         // POST2_LABEL
         //labels[rootNumber] = pd.store(aT.getLabel());
-        info[POST2_LABEL][postorder] = pd.store(aT.getProps());
+        info[POST2_LABEL][postorder] = pd.store(aT.getValue());
         
         // POST2_PARENT
         for (Integer i : childrenPostorders) info[POST2_PARENT][i] = postorder;

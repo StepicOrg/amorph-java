@@ -22,9 +22,9 @@ package org.stepik.amorph.actions.model;
 
 import org.stepik.amorph.tree.ITree;
 
-public class Insert extends Addition {
+public class InsertAction extends AdditionAction {
 
-    public Insert(ITree node, ITree parent, int pos) {
+    public InsertAction(ITree node, ITree parent, int pos) {
         super(node, parent, pos);
     }
 

@@ -24,11 +24,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.stepik.amorph.actions.model.Delete;
+import org.stepik.amorph.actions.model.DeleteAction;
 import org.stepik.amorph.actions.model.Action;
-import org.stepik.amorph.actions.model.Insert;
-import org.stepik.amorph.actions.model.Move;
-import org.stepik.amorph.actions.model.Update;
+import org.stepik.amorph.actions.model.InsertAction;
+import org.stepik.amorph.actions.model.MoveAction;
+import org.stepik.amorph.actions.model.UpdateAction;
 import org.stepik.amorph.matchers.Mapping;
 import org.stepik.amorph.matchers.Matcher;
 import org.stepik.amorph.tree.ITree;
@@ -47,14 +47,14 @@ public class RootAndLeavesClassifier extends TreeClassifier {
     @Override
     public void classify() {
         for (Action a: actions) {
-            if (a instanceof Insert) {
+            if (a instanceof InsertAction) {
                 dstAddTrees.add(a.getNode());
-            } else if (a instanceof Delete) {
+            } else if (a instanceof DeleteAction) {
                 srcDelTrees.add(a.getNode());
-            } else if (a instanceof Update) {
+            } else if (a instanceof UpdateAction) {
                 srcUpdTrees.add(a.getNode());
                 dstUpdTrees.add(mappings.getDst(a.getNode()));
-            } else if (a instanceof Move) {
+            } else if (a instanceof MoveAction) {
                 srcMvTrees.add(a.getNode());
                 dstMvTrees.add(mappings.getDst(a.getNode()));
             }

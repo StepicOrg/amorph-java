@@ -22,29 +22,14 @@ package org.stepik.amorph.actions.model;
 
 import org.stepik.amorph.tree.ITree;
 
-import java.util.Map;
+public class MoveAction extends AdditionAction {
 
-public class Update extends Action {
-
-    private Map props;
-
-    public Update(ITree node, Map props) {
-        super(node);
-        this.props = props;
+    public MoveAction(ITree node, ITree parent, int pos) {
+        super(node, parent, pos);
     }
 
     @Override
     public String getName() {
-        return "UPD";
+        return "MOV";
     }
-
-    public Map getProps() {
-        return this.props;
-    }
-
-    @Override
-    public String toString() {
-        return getName() + " " + node.toString() + " from " + node.getProps() + " to " + props;
-    }
-
 }

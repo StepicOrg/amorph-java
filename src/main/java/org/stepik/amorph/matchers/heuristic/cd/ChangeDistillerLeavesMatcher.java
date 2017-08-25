@@ -20,7 +20,7 @@
 
 package org.stepik.amorph.matchers.heuristic.cd;
 
-import org.stepik.amorph.utils.MapStringDistance;
+import org.simmetrics.StringMetrics;
 import org.stepik.amorph.matchers.Mapping;
 import org.stepik.amorph.matchers.MappingStore;
 import org.stepik.amorph.matchers.Matcher;
@@ -48,7 +48,7 @@ public class ChangeDistillerLeavesMatcher extends Matcher {
             for (ITree dstLeaf: dstLeaves) {
                 ITree srcLeaf = srcLeaves.next();
                 if (isMappingAllowed(srcLeaf, dstLeaf)) {
-                    double sim = MapStringDistance.compare(srcLeaf.getProps(), dstLeaf.getProps());
+                    double sim = StringMetrics.qGramsDistance().compare(srcLeaf.getValue(), dstLeaf.getValue());
                     if (sim > LABEL_SIM_THRESHOLD) leafMappings.add(new Mapping(srcLeaf, dstLeaf));
                 }
             }
@@ -85,7 +85,7 @@ public class ChangeDistillerLeavesMatcher extends Matcher {
 
         public double sim(Mapping m) {
 
-            return MapStringDistance.compare(m.getFirst().getProps(), m.getSecond().getProps());
+            return StringMetrics.qGramsDistance().compare(m.getFirst().getValue(), m.getSecond().getValue());
         }
 
     }

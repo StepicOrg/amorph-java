@@ -20,16 +20,20 @@
 
 package org.stepik.amorph.tree;
 
+import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.tree.ParseTree;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 
 
 public class Tree extends AbstractTree implements ITree {
     private String type;
-    private Map props;
+    private String value;
 
     // Begin position of the tree in terms of absolute character index and length
     private int pos;
@@ -38,28 +42,73 @@ public class Tree extends AbstractTree implements ITree {
 
     private AssociationMap metadata;
 
+    public Tree(ParseTree parseTree, TokenStream stream) {
+        this(parseTree, stream, null);
+    }
+
+    public Tree(ParseTree parseTree, TokenStream stream, Tree parent) {
+        generatePk();
+
+        Interval interval = parseTree.getSourceInterval();
+
+        int start = stream.get(interval.a).getStartIndex();
+        int stop = stream.get(interval.b).getStopIndex();
+
+        setText(stream.getText(interval));
+        setPos(start);
+        setLength(stop - start + 1);
+
+        String ruleName = parseTree.getClass().getSimpleName().replace("Context", "");
+        setType(Character.toLowerCase(ruleName.charAt(0)) + ruleName.substring(1));
+
+        if (parseTree.getChildCount() == 0)
+            setValue(((Token) parseTree.getPayload()).getText());
+        else
+            setValue("");
+
+        setParent(parent);
+        children = new ArrayList<>();
+
+        for (int i = 0; i < parseTree.getChildCount(); i++) {
+            ParseTree child = parseTree.getChild(i);
+            ParseTree nextNode = getBranchOrLeaf(child);
+
+            children.add(new Tree(nextNode, stream, this));
+        }
+    }
+
+    private static ParseTree getBranchOrLeaf(ParseTree node) {
+        if (node.getPayload() instanceof Token || node.getChildCount() != 1)
+            return node;
+
+        return getBranchOrLeaf(node.getChild(0));
+    }
+
     /**
      * Constructs a new node. If you need type labels corresponding to the integer
      */
-    public Tree(String pk, String type, Map props) {
+    public Tree(String pk, String type, String value) {
         this.pk = pk;
         this.type = type;
-        this.props = (props == null) ? NO_PROPS : props;
+        this.value = (value == null) ? NO_VALUE : value;
+        this.text = "";
         this.id = NO_ID;
-        this.depth = NO_VALUE;
-        this.hash = NO_VALUE;
-        this.height = NO_VALUE;
-        this.depth = NO_VALUE;
-        this.size = NO_VALUE;
-        this.pos = NO_VALUE;
-        this.length = NO_VALUE;
+        this.depth = NO_FIELD_VALUE;
+        this.hash = NO_FIELD_VALUE;
+        this.height = NO_FIELD_VALUE;
+        this.depth = NO_FIELD_VALUE;
+        this.size = NO_FIELD_VALUE;
+        this.pos = NO_FIELD_VALUE;
+        this.length = NO_FIELD_VALUE;
         this.children = new ArrayList<>();
     }
 
     // Only used for cloning ...
     private Tree(Tree other) {
-        this.type = other.type;
-        this.props = other.getProps();
+        this.pk = other.getPk();
+        this.type = other.getType();
+        this.value = other.getValue();
+        this.text = other.getText();
         this.id = other.getId();
         this.pos = other.getPos();
         this.length = other.getLength();
@@ -70,6 +119,11 @@ public class Tree extends AbstractTree implements ITree {
         this.depth = other.getDepth();
         this.children = new ArrayList<>();
         this.metadata = other.metadata;
+    }
+
+    @Override
+    public int hashCode() {
+        return pk.hashCode();
     }
 
     @Override
@@ -85,8 +139,13 @@ public class Tree extends AbstractTree implements ITree {
     }
 
     @Override
+    public Tree copy() {
+        return new Tree(this);
+    }
+
+    @Override
     public Tree deepCopy() {
-        Tree copy = new Tree(this);
+        Tree copy = this.copy();
         for (ITree child : getChildren())
             copy.addChild(child.deepCopy());
         return copy;
@@ -98,8 +157,8 @@ public class Tree extends AbstractTree implements ITree {
     }
 
     @Override
-    public Map getProps() {
-        return props;
+    public String getValue() {
+        return value;
     }
 
     @Override
@@ -130,8 +189,8 @@ public class Tree extends AbstractTree implements ITree {
     }
 
     @Override
-    public void setProps(Map props) {
-        this.props = props;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

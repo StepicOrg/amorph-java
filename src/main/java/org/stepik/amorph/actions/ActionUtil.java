@@ -21,30 +21,30 @@
 package org.stepik.amorph.actions;
 
 import org.stepik.amorph.actions.model.*;
-import org.stepik.amorph.tree.TreeContext;
 
 import java.util.List;
 
 public class ActionUtil {
-    private ActionUtil() {}
+    public static void apply(Action a) {
+        if (a instanceof InsertAction) {
+            InsertAction action = ((InsertAction) a);
+            action.getParent().insertChild(action.getNode(), action.getPosition());
+        } else if (a instanceof UpdateAction) {
+            UpdateAction action = ((UpdateAction) a);
+            action.getNode().setValue(action.getValue());
+        } else if (a instanceof MoveAction) {
+            MoveAction action = ((MoveAction) a);
+            action.getNode().getParent().getChildren().remove(action.getNode());
+            action.getParent().insertChild(action.getNode(), action.getPosition());
+        } else if (a instanceof DeleteAction) {
+            DeleteAction action = ((DeleteAction) a);
+            action.getNode().getParent().getChildren().remove(action.getNode());
+        } else throw new RuntimeException("No such action: " + a );
+    }
 
-    public static TreeContext apply(TreeContext context, List<Action> actions) {
+    public static void apply(List<Action> actions) {
         for (Action a: actions) {
-            if (a instanceof Insert) {
-                Insert action = ((Insert) a);
-                action.getParent().insertChild(action.getNode(), action.getPosition());
-            } else if (a instanceof Update) {
-                Update action = ((Update) a);
-                action.getNode().setProps(action.getProps());
-            } else if (a instanceof Move) {
-                Move action = ((Move) a);
-                action.getNode().getParent().getChildren().remove(action.getNode());
-                action.getParent().insertChild(action.getNode(), action.getPosition());
-            } else if (a instanceof Delete) {
-                Delete action = ((Delete) a);
-                action.getNode().getParent().getChildren().remove(action.getNode());
-            } else throw new RuntimeException("No such action: " + a );
+            apply(a);
         }
-        return context;
     }
 }

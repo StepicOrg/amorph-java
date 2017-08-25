@@ -301,7 +301,7 @@ public class HungarianAlgorithm {
     }
 
     /**
-     * Update labels with the specified slack by adding the slack value for
+     * UpdatePatch labels with the specified slack by adding the slack value for
      * committed workers and by subtracting the slack value for committed jobs.
      * In addition, update the minimum slack values appropriately.
      */

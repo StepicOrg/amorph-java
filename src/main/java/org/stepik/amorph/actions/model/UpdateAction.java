@@ -22,14 +22,28 @@ package org.stepik.amorph.actions.model;
 
 import org.stepik.amorph.tree.ITree;
 
-public class Move extends Addition {
+import java.util.Map;
 
-    public Move(ITree node, ITree parent, int pos) {
-        super(node, parent, pos);
+public class UpdateAction extends Action {
+    private String value;
+
+    public UpdateAction(ITree node, String value) {
+        super(node);
+        this.value = value;
     }
 
     @Override
     public String getName() {
-        return "MOV";
+        return "UPD";
     }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    @Override
+    public String toString() {
+        return getName() + " " + node.toString() + " from " + node.getValue() + " to " + value;
+    }
+
 }

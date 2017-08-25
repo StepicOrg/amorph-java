@@ -23,11 +23,11 @@ package org.stepik.amorph.actions;
 import java.util.List;
 import java.util.Set;
 
-import org.stepik.amorph.actions.model.Delete;
-import org.stepik.amorph.actions.model.Update;
+import org.stepik.amorph.actions.model.DeleteAction;
+import org.stepik.amorph.actions.model.UpdateAction;
 import org.stepik.amorph.actions.model.Action;
-import org.stepik.amorph.actions.model.Insert;
-import org.stepik.amorph.actions.model.Move;
+import org.stepik.amorph.actions.model.InsertAction;
+import org.stepik.amorph.actions.model.MoveAction;
 import org.stepik.amorph.matchers.Mapping;
 import org.stepik.amorph.matchers.Matcher;
 import org.stepik.amorph.tree.ITree;
@@ -46,14 +46,14 @@ public class LeavesClassifier extends TreeClassifier {
     @Override
     public void classify() {
         for (Action a: actions) {
-            if (a instanceof Delete && isLeafAction(a)) {
+            if (a instanceof DeleteAction && isLeafAction(a)) {
                 srcDelTrees.add(a.getNode());
-            } else if (a instanceof Insert && isLeafAction(a)) {
+            } else if (a instanceof InsertAction && isLeafAction(a)) {
                 dstAddTrees.add(a.getNode());
-            } else if (a instanceof Update && isLeafAction(a)) {
+            } else if (a instanceof UpdateAction && isLeafAction(a)) {
                 srcUpdTrees.add(a.getNode());
                 dstUpdTrees.add(mappings.getDst(a.getNode()));
-            } else if (a instanceof Move && isLeafAction(a)) {
+            } else if (a instanceof MoveAction && isLeafAction(a)) {
                 srcMvTrees.add(a.getNode());
                 dstMvTrees.add(mappings.getDst(a.getNode()));
             }

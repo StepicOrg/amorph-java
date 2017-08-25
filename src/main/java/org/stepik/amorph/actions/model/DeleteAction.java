@@ -22,9 +22,9 @@ package org.stepik.amorph.actions.model;
 
 import org.stepik.amorph.tree.ITree;
 
-public class Delete extends Action {
+public class DeleteAction extends Action {
 
-    public Delete(ITree node) {
+    public DeleteAction(ITree node) {
         super(node);
     }
 

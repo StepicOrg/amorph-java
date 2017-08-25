@@ -39,11 +39,17 @@ public interface ITree {
 
     int NO_ID = Integer.MIN_VALUE;
 
-    Map NO_PROPS = Collections.emptyMap();
+    String NO_VALUE = "";
 
-    int NO_VALUE = -1;
+    int NO_FIELD_VALUE = -1;
 
-    public String getPk();
+    String getText();
+
+    void setText(String text);
+
+    String getPk();
+
+    void generatePk();
 
     /**
      * @see HashGenerator
@@ -70,7 +76,7 @@ public interface ITree {
     void addChild(ITree t);
 
     /**
-     * Insert the given tree as the position-th child, and update its parent.
+     * InsertPatch the given tree as the position-th child, and update its parent.
      */
     void insertChild(ITree t, int position);
 
@@ -129,6 +135,12 @@ public interface ITree {
     int positionInParent();
 
     /**
+     * Make a shallow copy of the tree.
+     * @return a shallow copy of the tree.
+     */
+    ITree copy();
+
+    /**
      * Make a deep copy of the tree.
      * Deep copy of node however shares Metadata
      * @return a deep copy of the tree.
@@ -162,11 +174,11 @@ public interface ITree {
 
     void setId(int id);
 
-    boolean hasProps();
+    boolean hasValue();
 
-    Map getProps();
+    String getValue();
 
-    void setProps(Map props);
+    void setValue(String value);
 
     int getPos();
 

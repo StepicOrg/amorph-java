@@ -68,7 +68,7 @@ public class RtedAlgorithm {
 	private InfoTree it2;
 	private int size1;
 	private int size2;
-	private PropsDictionary ld;
+	private LabelDictionary ld;
 
 	// arrays
 	private int[][] str; // strategy array
@@ -141,7 +141,7 @@ public class RtedAlgorithm {
 	 * @param t2
 	 */
 	public void init(ITree t1, ITree t2) {
-		ld = new PropsDictionary();
+		ld = new LabelDictionary();
 		it1 = new InfoTree(t1, ld);
 		it2 = new InfoTree(t2, ld);
 		size1 = it1.getSize();

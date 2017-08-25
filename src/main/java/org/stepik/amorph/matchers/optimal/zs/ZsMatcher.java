@@ -20,7 +20,7 @@
 
 package org.stepik.amorph.matchers.optimal.zs;
 
-import org.stepik.amorph.utils.MapStringDistance;
+import org.simmetrics.StringMetrics;
 import org.stepik.amorph.matchers.MappingStore;
 import org.stepik.amorph.matchers.Matcher;
 import org.stepik.amorph.tree.ITree;
@@ -165,10 +165,10 @@ public class ZsMatcher extends Matcher {
 
     private double getUpdateCost(ITree n1, ITree n2) {
         if (Objects.equals(n1.getType(), n2.getType()))
-            if ("".equals(n1.getProps()) || "".equals(n2.getProps()))
+            if ("".equals(n1.getValue()) || "".equals(n2.getValue()))
                 return 1D;
             else
-                return 1D - MapStringDistance.compare(n1.getProps(), n2.getProps());
+                return 1D - StringMetrics.qGramsDistance().compare(n1.getValue(), n2.getValue());
         else
             return Double.MAX_VALUE;
     }

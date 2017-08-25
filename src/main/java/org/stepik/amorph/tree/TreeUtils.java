@@ -20,18 +20,39 @@
 
 package org.stepik.amorph.tree;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import org.stepik.amorph.utils.Pair;
 
 public final class TreeUtils {
 
     private TreeUtils() {
+    }
+
+    public static void regeneratePks(ITree root) {
+        for (ITree node : root.postOrder()) {
+            node.generatePk();
+        }
+    }
+
+    public static LinkedHashSet<String> postOrderPks(ITree root) {
+        LinkedHashSet<String> pks = new LinkedHashSet<>();
+
+        for (ITree node : root.postOrder()) {
+            pks.add(node.getPk());
+        }
+
+        return pks;
+    }
+
+    public static Map<String, ITree> flattenTree(ITree root) {
+        Map<String, ITree> store = new HashMap<>();
+
+        for (ITree node : root.postOrder()) {
+            store.put(node.getPk(), node);
+        }
+
+        return store;
     }
 
     /**

@@ -38,15 +38,15 @@ public class HashUtils {
     }
 
     public static int standardHash(ITree t) {
-        return t.getType().hashCode() + HashUtils.BASE * t.getProps().hashCode();
+        return t.getType().hashCode() + HashUtils.BASE * t.getValue().hashCode();
     }
 
     public static String inSeed(ITree t) {
-        return ITree.OPEN_SYMBOL + t.getProps() + ITree.SEPARATE_SYMBOL + t.getType();
+        return ITree.OPEN_SYMBOL + t.getValue() + ITree.SEPARATE_SYMBOL + t.getType();
     }
 
     public static String outSeed(ITree t) {
-        return  t.getType() + ITree.SEPARATE_SYMBOL + t.getProps() + ITree.CLOSE_SYMBOL;
+        return  t.getType() + ITree.SEPARATE_SYMBOL + t.getValue() + ITree.CLOSE_SYMBOL;
     }
 
     public static int md5(String s) {
@@ -57,7 +57,7 @@ public class HashUtils {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return ITree.NO_VALUE;
+        return ITree.NO_FIELD_VALUE;
     }
 
     public static int fpow(int a, int b) {

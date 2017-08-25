@@ -23,11 +23,8 @@ package org.stepik.amorph.actions;
 import java.util.List;
 import java.util.Set;
 
-import org.stepik.amorph.actions.model.Delete;
-import org.stepik.amorph.actions.model.Move;
-import org.stepik.amorph.actions.model.Update;
-import org.stepik.amorph.actions.model.Action;
-import org.stepik.amorph.actions.model.Insert;
+import org.stepik.amorph.actions.model.*;
+import org.stepik.amorph.actions.model.MoveAction;
 import org.stepik.amorph.matchers.Mapping;
 import org.stepik.amorph.matchers.Matcher;
 import org.stepik.amorph.tree.TreeContext;
@@ -44,13 +41,13 @@ public class RootsClassifier extends TreeClassifier {
 
     public void classify() {
         for (Action a: actions) {
-            if (a instanceof Delete) srcDelTrees.add(a.getNode());
-            else if (a instanceof Insert)
+            if (a instanceof DeleteAction) srcDelTrees.add(a.getNode());
+            else if (a instanceof InsertAction)
                 dstAddTrees.add(a.getNode());
-            else if (a instanceof Update) {
+            else if (a instanceof UpdateAction) {
                 srcUpdTrees.add(a.getNode());
                 dstUpdTrees.add(mappings.getDst(a.getNode()));
-            } else if (a instanceof Move) {
+            } else if (a instanceof MoveAction) {
                 srcMvTrees.add(a.getNode());
                 dstMvTrees.add(mappings.getDst(a.getNode()));
             }

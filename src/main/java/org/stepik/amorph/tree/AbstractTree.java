@@ -27,6 +27,8 @@ import java.util.*;
 public abstract class AbstractTree implements ITree {
     protected String pk;
 
+    protected String text;
+
     protected int id;
 
     protected ITree parent;
@@ -41,9 +43,26 @@ public abstract class AbstractTree implements ITree {
 
     protected int hash;
 
+    @Override
     public String getPk() {
         return pk;
     }
+
+    @Override
+    public void generatePk() {
+        pk = UUID.randomUUID().toString();
+    }
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public void setText(String text) {
+        this.text = text;
+    }
+
 
     @Override
     public int getChildPosition(ITree child) {
@@ -83,8 +102,8 @@ public abstract class AbstractTree implements ITree {
     }
 
     @Override
-    public boolean hasProps() {
-        return !NO_PROPS.equals(getProps());
+    public boolean hasValue() {
+        return !NO_VALUE.equals(getValue());
     }
 
     @Override
@@ -153,7 +172,7 @@ public abstract class AbstractTree implements ITree {
     public boolean hasSameTypeAndLabel(ITree t) {
         if (!hasSameType(t))
             return false;
-        else if (!getProps().equals(t.getProps()))
+        else if (!getValue().equals(t.getValue()))
             return false;
         return true;
     }
@@ -244,7 +263,7 @@ public abstract class AbstractTree implements ITree {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append(getType() + "#" + getProps() + "[");
+        builder.append(getType() + "#" + getValue() + "[");
         for (ITree child : getChildren())
             builder.append(child);
         builder.append("]");
@@ -253,7 +272,7 @@ public abstract class AbstractTree implements ITree {
 
     @Override
     public String toShortString() {
-        return String.format("%s%s%s", getType(), SEPARATE_SYMBOL, getProps());
+        return String.format("%s%s%s", getType(), SEPARATE_SYMBOL, getValue());
     }
 
     @Override
@@ -290,6 +309,11 @@ public abstract class AbstractTree implements ITree {
         }
 
         @Override
+        public ITree copy() {
+            throw unsupportedOperation();
+        }
+
+        @Override
         public ITree deepCopy() {
             throw unsupportedOperation();
         }
@@ -300,8 +324,8 @@ public abstract class AbstractTree implements ITree {
         }
 
         @Override
-        public Map getProps() {
-            return NO_PROPS;
+        public String getValue() {
+            return NO_VALUE;
         }
 
         @Override
@@ -330,7 +354,7 @@ public abstract class AbstractTree implements ITree {
         }
 
         @Override
-        public void setProps(Map props) {
+        public void setValue(String value) {
             throw unsupportedOperation();
         }
 
