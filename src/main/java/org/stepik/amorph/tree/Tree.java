@@ -113,6 +113,7 @@ public class Tree extends AbstractTree implements ITree {
         this.pos = other.getPos();
         this.length = other.getLength();
         this.height = other.getHeight();
+        this.parent = other.getParent();
         this.size = other.getSize();
         this.depth = other.getDepth();
         this.hash = other.getHash();

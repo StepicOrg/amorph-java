@@ -2,19 +2,50 @@ package org.stepik.amorph.patches;
 
 import org.stepik.amorph.actions.ActionUtil;
 import org.stepik.amorph.actions.model.*;
+import org.stepik.amorph.patches.minimize.DeleteUnit;
+import org.stepik.amorph.patches.minimize.DescendantsReducer;
+import org.stepik.amorph.patches.minimize.InsertUnit;
 import org.stepik.amorph.patches.model.DeletePatch;
 import org.stepik.amorph.patches.model.InsertPatch;
 import org.stepik.amorph.patches.model.Patch;
 import org.stepik.amorph.patches.model.UpdatePatch;
-import org.stepik.amorph.patches.minimize.DeleteUnit;
-import org.stepik.amorph.patches.minimize.DescendantsReducer;
-import org.stepik.amorph.patches.minimize.InsertUnit;
 import org.stepik.amorph.tree.ITree;
 import org.stepik.amorph.tree.TreeUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PatchUtil {
+    private static String getParentPk(ITree tree) {
+        ITree parent = tree.getParent();
+        return parent == null ? "" : parent.getPk();
+    }
+
+    private static int parentOrder(ITree a, ITree b) {
+        String aParentPk = getParentPk(a);
+        String bParentPk = getParentPk(b);
+
+        return aParentPk.equals(bParentPk) ? Integer.compare(a.positionInParent(), b.positionInParent())
+                                           : aParentPk.compareTo(bParentPk);
+    }
+
+    public static int getTruePosition(int pos, ITree parent, Set<ITree> deleted) {
+        int truePos = -1;
+        while (pos >= 0) {
+            truePos++;
+
+            // append to the end case
+            if (truePos == parent.getChildren().size())
+                return truePos;
+
+            ITree child = parent.getChild(truePos);
+            if (!deleted.contains(child))
+                pos--;
+        }
+
+        return truePos;
+    }
+
     public static List<Patch> patchesFromActions(List<Action> actions) {
         List<Patch> patches = new ArrayList<>();
 
@@ -30,16 +61,20 @@ public class PatchUtil {
                 ActionUtil.apply(action);
             }
 
-            if (action instanceof DeleteAction) {
+            else if (action instanceof DeleteAction) {
                 deleteReducer.addNode(node, node.getParent());
                 // no need to apply as we can get text position information from it later
             }
 
-            // NOTE: insert action affects only one node without children
-            if (action instanceof InsertAction) {
+            // NOTE: insert action affects only one node= without children
+            else if (action instanceof InsertAction) {
                 InsertAction insert = (InsertAction) action;
                 ITree parent = insert.getParent();
                 insertReducer.addNode(node, parent);
+
+                int pos = insert.getPosition();
+                int truePos = getTruePosition(pos, parent, deleteReducer.getNodes());
+                insert.setPosition(truePos);
 
                 // need to apply insert to locate text positions from siblings later
                 ActionUtil.apply(insert);
@@ -47,14 +82,14 @@ public class PatchUtil {
 
             // move action is translated to delete and insert
             // NOTE: move action affects *whole* subtree with all children of node
-            if (action instanceof MoveAction) {
+            else if (action instanceof MoveAction) {
                 MoveAction move = (MoveAction) action;
                 ITree parent = move.getParent();
 
                 insertReducer.addTree(node, parent, TreeUtils::preOrder);
 
                 ITree oldParent = node.getParent();
-                int oldPos = oldParent.getChildPosition(node);
+                int oldPos = node.positionInParent();
 
                 // we want to leave deleted tree as it can give us
                 // position information later so we are creating a copy
@@ -63,10 +98,15 @@ public class PatchUtil {
                 TreeUtils.regeneratePks(deleted);
                 deleteReducer.addTree(deleted, oldParent, TreeUtils::postOrder);
 
-                ActionUtil.apply(move);
-                // insert tree copy to old place
-                oldParent.insertChild(deleted, oldPos);
-            }
+                // replace old child with plug as move's
+                // new position relies on old numbering
+                oldParent.getChildren().set(oldPos, deleted);
+
+                int pos = move.getPosition();
+                int truePos = getTruePosition(pos, parent, deleteReducer.getNodes());
+                parent.insertChild(node, truePos);
+            } else
+                throw new RuntimeException("Unknown type of action: " + action.getClass().getSimpleName());
         }
 
         // delete can reference to moved node.
@@ -100,7 +140,11 @@ public class PatchUtil {
         // all patches after first in group so we should combine them all in InsertUnit
         List<InsertUnit> insertUnits = new ArrayList<>();
         Map<ITree, InsertUnit> nodeToInsertUnit = new HashMap<>();
-        for (ITree node : insertReducer.getRoots()) {
+        List<ITree> insertRoots = insertReducer.getRoots()
+                            .stream()
+                            .sorted(PatchUtil::parentOrder)
+                            .collect(Collectors.toList());
+        for (ITree node : insertRoots) {
             ITree parent = node.getParent();
 
             InsertUnit tmp = new InsertUnit();
@@ -149,7 +193,11 @@ public class PatchUtil {
         // same idea as with insert units
         List<DeleteUnit> deleteUnits = new ArrayList<>();
         Map<ITree, DeleteUnit> nodeToDeleteUnit = new HashMap<>();
-        for (ITree node : deleteReducer.getRoots()) {
+        List<ITree> deleteRoots = deleteReducer.getRoots()
+                .stream()
+                .sorted(PatchUtil::parentOrder)
+                .collect(Collectors.toList());
+        for (ITree node : deleteRoots) {
             ITree parent = node.getParent();
 
             DeleteUnit tmp = new DeleteUnit();

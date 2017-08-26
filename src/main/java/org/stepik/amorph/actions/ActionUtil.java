@@ -21,25 +21,28 @@
 package org.stepik.amorph.actions;
 
 import org.stepik.amorph.actions.model.*;
+import org.stepik.amorph.tree.ITree;
 
 import java.util.List;
 
 public class ActionUtil {
     public static void apply(Action a) {
+        ITree node = a.getNode();
+        
         if (a instanceof InsertAction) {
             InsertAction action = ((InsertAction) a);
-            action.getParent().insertChild(action.getNode(), action.getPosition());
+            action.getParent().insertChild(node, action.getPosition());
         } else if (a instanceof UpdateAction) {
             UpdateAction action = ((UpdateAction) a);
-            action.getNode().setValue(action.getValue());
+            node.setValue(action.getValue());
         } else if (a instanceof MoveAction) {
             MoveAction action = ((MoveAction) a);
-            action.getNode().getParent().getChildren().remove(action.getNode());
-            action.getParent().insertChild(action.getNode(), action.getPosition());
+            node.getParent().getChildren().remove(node);
+            action.getParent().insertChild(node, action.getPosition());
         } else if (a instanceof DeleteAction) {
-            DeleteAction action = ((DeleteAction) a);
-            action.getNode().getParent().getChildren().remove(action.getNode());
-        } else throw new RuntimeException("No such action: " + a );
+            node.getParent().getChildren().remove(node);
+        } else
+            throw new RuntimeException("No such action: " + a );
     }
 
     public static void apply(List<Action> actions) {

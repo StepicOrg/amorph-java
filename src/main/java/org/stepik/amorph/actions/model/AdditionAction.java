@@ -38,8 +38,16 @@ public abstract class AdditionAction extends Action {
         return parent;
     }
 
+    public void setParent(ITree parent) {
+        this.parent = parent;
+    }
+
     public int getPosition() {
         return pos;
+    }
+
+    public void setPosition(int pos) {
+        this.pos = pos;
     }
 
     @Override

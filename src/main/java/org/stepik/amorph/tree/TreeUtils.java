@@ -25,7 +25,6 @@ import java.util.*;
 import org.stepik.amorph.utils.Pair;
 
 public final class TreeUtils {
-
     private TreeUtils() {
     }
 

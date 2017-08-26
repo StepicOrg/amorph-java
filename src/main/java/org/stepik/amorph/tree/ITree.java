@@ -32,7 +32,6 @@ import java.util.Map.Entry;
  * Interface to represent abstract syntax trees.
  */
 public interface ITree {
-
     String OPEN_SYMBOL = "[(";
     String CLOSE_SYMBOL = ")]";
     String SEPARATE_SYMBOL = "@@";
