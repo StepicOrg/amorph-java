@@ -38,7 +38,7 @@ JSON array of patches to apply to source tree. All positions are referring to `s
 #### Delete
 - `type` == `"delete"`
 - `start` - position to start delete from
-- `end` - position after last character to delete
+- `stop` - position after last character to delete
 
 #### Insert
 - `type` == `"insert"`
@@ -49,7 +49,7 @@ JSON array of patches to apply to source tree. All positions are referring to `s
 Synonym for replace
 - `type` == `"update"`
 - `start` - position to start replace from
-- `end` - position after last character to replace
-- `value` - value to replace text in range with
+- `stop` - position after last character to replace
+- `text` - value to replace text in range with
 
 **NOTE** `pos` of insert patch can refer to position further than string length. In this case append to the end is requested

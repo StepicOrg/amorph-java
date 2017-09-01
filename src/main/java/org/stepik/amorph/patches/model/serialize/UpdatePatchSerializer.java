@@ -12,7 +12,7 @@ public class UpdatePatchSerializer implements JsonSerializer<UpdatePatch> {
         result.add("type", new JsonPrimitive("update"));
         result.add("start", new JsonPrimitive(src.getStart()));
         result.add("stop", new JsonPrimitive(src.getStop()));
-        result.add("value", new JsonPrimitive(src.getValue()));
+        result.add("text", new JsonPrimitive(src.getValue()));
         return result;
     }
 }
