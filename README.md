@@ -53,3 +53,9 @@ Synonym for replace
 - `text` - value to replace text in range with
 
 **NOTE** `pos` of insert patch can refer to position further than string length. In this case append to the end is requested
+
+## Credits
+Amorph-java is based [ANTLR4](https://github.com/antlr/antlr4) and rewritten version of [Gumtree](https://github.com/GumTreeDiff/gumtree)
+
+## License
+MIT
